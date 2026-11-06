@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+instance/*.db
+backups/
+uploads/
+ # Configuración local de VS Code
+.vscode/

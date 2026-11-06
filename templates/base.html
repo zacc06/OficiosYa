@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123c35"><title>{% block title %}OficiosYa{% endblock %} · OficiosYa</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar"><div class="wrap nav">
+  <a class="brand" href="{{ url_for('inicio') }}"><span class="brand-mark">O</span><span>oficios<span class="brand-accent">ya</span><small>Servicios cerca tuyo</small></span></a>
+  <button class="menu-button" aria-label="Abrir menú" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+  <nav class="nav-links">
+    <a href="{{ url_for('inicio') }}">Buscar servicios</a><a href="{{ url_for('proyectos') }}">Proyectos</a><a href="{{ url_for('empresas') }}">Empresas</a>{% if usuario_actual and usuario_actual.role == 'administrador' %}<a href="{{ url_for('academico') }}">Vista académica</a>{% endif %}
+    {% if usuario_actual %}
+      {% if usuario_actual.role == 'empresa' %}<a href="{{ url_for('panel_empresa') }}">Mi empresa</a>{% elif usuario_actual.role in ['cliente','trabajador'] %}<a href="{{ url_for('panel') }}">Mi panel</a>{% endif %}
+      {% if usuario_actual.role == 'trabajador' %}<a href="{{ url_for('solicitudes_oficios') }}">Solicitar oficio</a>{% endif %}
+      {% if usuario_actual.role == 'administrador' %}<a href="{{ url_for('administrar_oficios') }}">Administración</a>{% endif %}
+      <form class="nav-logout" method="post" action="{{ url_for('salir') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="nav-cta">Salir · {{ usuario_actual.nombre_completo }}</button></form>
+    {% else %}<a href="{{ url_for('acceso') }}">Ingresar</a><a class="nav-cta" href="{{ url_for('registro') }}">Crear cuenta <span>↗</span></a>{% endif %}
+  </nav>
+</div></header>
+<main>
+{% with mensajes = get_flashed_messages(with_categories=true) %}{% if mensajes %}<div class="wrap flashes">{% for tipo, mensaje in mensajes %}<div class="flash {{ tipo }}">{{ mensaje }}<button aria-label="Cerrar" onclick="this.parentElement.remove()">×</button></div>{% endfor %}</div>{% endif %}{% endwith %}
+{% block content %}{% endblock %}</main>
+<footer class="footer"><div class="wrap footer-inner"><a class="brand brand-footer" href="{{ url_for('inicio') }}"><span class="brand-mark">O</span><span>oficios<span class="brand-accent">ya</span><small>Hecho para conectar.</small></span></a><p>Proyecto académico · Estructura de Datos · Paraguay</p><a href="{{ url_for('academico') }}">Explorar estructuras <span>↗</span></a></div></footer>
+</body></html>
